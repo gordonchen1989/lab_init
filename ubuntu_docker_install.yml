@@ -1,0 +1,31 @@
+- hosts: docker
+  tasks:
+  - name: Install linux-images-extra
+    apt:
+      name: "{{ packages }}"
+    vars:
+      packages:
+      - linux-image-extra-4.4.0-87-generic
+      - linux-image-extra-virtual
+  - name: update cache
+    apt:
+      update_cache: yes
+  - name: Install a list of packages
+    apt:
+      name: "{{ packages }}"
+    vars:
+      packages:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - software-properties-common
+  - name: add docker repo
+    shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  - name: enable repo
+    shell: add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+  - name: update cache
+    apt:
+      update_cache: yes
+  - name: Install docker-ce
+    apt:
+      name: docker-ce
